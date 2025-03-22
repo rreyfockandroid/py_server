@@ -1,0 +1,18 @@
+
+PB_REL="https://github.com/protocolbuffers/protobuf/releases"
+curl -LO $PB_REL/download/v25.1/protoc-25.1-linux-x86_64.zip
+
+https://medium.com/@crueda/gunicorn-flask-with-a-side-of-grpc-98a74c9285a7
+https://gunicorn.org/#quickstart
+
+https://stackoverflow.com/questions/62594409/performance-issue-async-grpc-with-gunicorn-tornado
+https://grpc.github.io/grpc/python/grpc_asyncio.html
+
+
+python -m grpc_tools.protoc -I../../protos --python_out=. --pyi_out=. --grpc_python_out=. api.proto
+
+
+
+
+
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
