@@ -6,6 +6,7 @@ import grpc
 from grpc import StatusCode
 from grpc.aio import server
 import asyncio
+from utils.clock import wrapper_async
 
 CONST_PORT = 50051
 
@@ -18,15 +19,16 @@ persons = {
 
 class PersonServiceServicer(api_grpc.PersonServiceServicer):
 
+    @wrapper_async
     async def GetPerson(self, person, context):
-        start = time.time()
-        await asyncio.sleep(1)
+        # start = time.time()
+        # await asyncio.sleep(1)
         if person.id in persons:
-            await asyncio.sleep(1)
-            end = time.time()
-            print(f'--Execution time: {end- start}')
+            # await asyncio.sleep(1)
+            # end = time.time()
+            # print(f'--Execution time: {end- start}')
             return persons[person.id]
-        await context.abort(StatusCode.NOT_FOUND, 'Person not found')
+        await context.abort(StatusCode.NOT_FOUND, f'Person {person.id} not found')
 
 async def serve():
     server_instance = server()

@@ -11,13 +11,13 @@ proto-gen:
 	python -m grpc_tools.protoc -I./protos --python_out=. --pyi_out=. --grpc_python_out=. api.proto
 
 server-start:
-	python pycode/server_asyncio.py
+	python server_asyncio.py
 
 server-stop:
 	ps aux | grep 'server_asyncio.py' | grep -v 'grep' | tr -s ' ' '^' | cut -d '^' -f 2 | xargs kill -15
 
 server-w-start:
-	python pycode/server.go
+	python server.py
 
 client-run:
-	python pycode/client.py
+	python client.py

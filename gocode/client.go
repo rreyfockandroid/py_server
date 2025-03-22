@@ -30,17 +30,17 @@ func exec(conn *grpc.ClientConn) {
 	client := api.NewPersonServiceClient(conn)
 	wg := &sync.WaitGroup{}
 	start := time.Now()
-	for i := 0; i < 100; i++ {
+	for i := 1; i < 50000; i++ {
 		wg.Add(1)
 		go func() {
 			p := &api.Person{
-				Id: 2,
+				Id: int32(1),
 			}
 			res, err := client.GetPerson(ctx, p)
 			if err != nil {
-				panic(err)
+				fmt.Println(err)
 			}
-			fmt.Println(res)
+			fmt.Println(i, " ", res)
 			wg.Done()
 		}()
 	}

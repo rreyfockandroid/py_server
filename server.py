@@ -22,9 +22,9 @@ class PersonServiceServicer(api_grpc.PersonServiceServicer):
 
     @wrapper
     def GetPerson(self, person, context):
-        time.sleep(1)
+        # time.sleep(1)
         if person.id in persons:
-            time.sleep(1)
+            # time.sleep(1)
             return persons[person.id]
         context.abort(StatusCode.NOT_FOUND, 'Person not found')
                           
