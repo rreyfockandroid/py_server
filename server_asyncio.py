@@ -1,33 +1,27 @@
 import api_pb2 as api
 import api_pb2_grpc as api_grpc
 
+import signal
 import time
 import grpc
 from grpc import StatusCode
 from grpc.aio import server
 import asyncio
 from utils.clock import wrapper_async
+from datasource.person_ds import PersonDS
+
 
 CONST_PORT = 50051
 
-persons = {
-    1: api.PersonDetails(id=1, name='Jan'),
-    2: api.PersonDetails(id=2, name='Anna'),
-    3: api.PersonDetails(id=3, name='Krzysztof'),
-    4: api.PersonDetails(id=4, name='Karol'),
-}
-
 class PersonServiceServicer(api_grpc.PersonServiceServicer):
 
+    person_ds = PersonDS()
+
     @wrapper_async
-    async def GetPerson(self, person, context):
-        # start = time.time()
-        # await asyncio.sleep(1)
-        if person.id in persons:
-            # await asyncio.sleep(1)
-            # end = time.time()
-            # print(f'--Execution time: {end- start}')
-            return persons[person.id]
+    async def GetPerson(self, person_api, context):
+        person = self.person_ds.get_person(person_api.id)
+        if person:
+            return api.PersonDetails(id=person.id, name=person.name, email=person.email)
         await context.abort(StatusCode.NOT_FOUND, f'Person {person.id} not found')
 
 async def serve():
@@ -35,13 +29,10 @@ async def serve():
     api_grpc.add_PersonServiceServicer_to_server(PersonServiceServicer(), server_instance)
     server_instance.add_insecure_port(f'[::]:{CONST_PORT}')
     await server_instance.start()
+
     print(f'Server started on port {CONST_PORT}')
-    try:
-        await server_instance.wait_for_termination()
-    except KeyboardInterrupt:
-        await server_instance.stop(0)
-    except Exception as e:
-        await server_instance.stop(1)
+
+    await server_instance.wait_for_termination()
 
 if __name__ == '__main__':
     asyncio.run(serve())
